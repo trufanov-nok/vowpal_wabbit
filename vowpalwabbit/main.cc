@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     struct timeb t_start, t_end;
     ftime(&t_start);
     
-    if (!all.quiet && !all.bfgs && !all.searchstr)
+    if (!all.quiet && !all.bfgs && !all.searchstr && ! all.demangle_reg)
         {
         	std::cerr << std::left
         	          << std::setw(shared_data::col_avg_loss) << std::left << "average"
@@ -64,6 +64,24 @@ int main(int argc, char *argv[])
         		  << " "
         		  << std::setw(shared_data::col_current_features) << "features"
         		  << std::endl;
+        } else
+        if (all.demangle_reg && !all.quiet)
+        {
+            std::cerr << "Regressor contains " << all.weights_loaded << " weights\n";
+            std::cerr << std::left
+                  << std::setw(shared_data::col_example_counter) << "example"
+                  << " "
+                  << std::setw(shared_data::col_example_weight) << "features"
+                  << " "
+                  << std::setw(shared_data::col_current_label) << "total"
+                  << std::endl;
+            std::cerr << std::left
+                  << std::setw(shared_data::col_example_counter) << "counter"
+                  << " "
+                  << std::setw(shared_data::col_example_weight) << "demangled"
+                  << " "
+                  << std::setw(shared_data::col_current_label) << "progress"
+                  << std::endl;
         }
 
     VW::start_parser(all);

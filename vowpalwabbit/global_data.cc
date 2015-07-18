@@ -289,6 +289,8 @@ vw::vw()
   num_children = 10;
   span_server = "";
   save_resume = false;
+  demangle_reg = false;
+  weights_loaded = 0;
 
   random_positive_weights = false;
 

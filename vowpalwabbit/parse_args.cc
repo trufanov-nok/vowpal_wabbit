@@ -56,6 +56,7 @@ license as described in the file LICENSE.
 #include "best_constant.h"
 #include "interact.h"
 #include "vw_exception.h"
+#include "demangle_regressor.h"
 
 using namespace std;
 //
@@ -855,11 +856,11 @@ void parse_output_preds(vw& all)
 	  const char* t = vm["raw_predictions"].as< string >().c_str();
 	  int f;
 #ifdef _WIN32
-	  _sopen_s(&f, t, _O_CREAT|_O_WRONLY|_O_BINARY|_O_TRUNC, _SH_DENYWR, _S_IREAD|_S_IWRITE);
+      _sopen_s(&f, t, _O_CREAT|_O_WRONLY|_O_BINARY|_O_TRUNC, _SH_DENYWR, _S_IREAD|_S_IWRITE);
 #else
 	  f = open(t, O_CREAT|O_WRONLY|O_LARGEFILE|O_TRUNC,0666);
 #endif
-	  all.raw_prediction = f;
+      all.raw_prediction = f;
 	}
   }
 }
@@ -980,6 +981,8 @@ void parse_reductions(vw& all)
   all.reduction_stack.push_back(ExpReplay::expreplay_setup<'c', COST_SENSITIVE::cs_label>);
   all.reduction_stack.push_back(Search::setup);
   all.reduction_stack.push_back(bs_setup);
+
+  all.reduction_stack.push_back(demangle_setup);
 
   all.l = setup_base(all);
 }
@@ -1133,6 +1136,14 @@ void parse_sources(vw& all, io_buf& model)
 
   enable_sources(all, all.quiet, all.numpasses);
 
+//  if (all.raw_prediction == -1) {
+//        if (all.daemon)
+//        {
+
+
+//        }
+//    }
+
   // force wpp to be a power of 2 to avoid 32-bit overflow
   uint32_t i = 0;
   size_t params_per_problem = all.l->increment;
@@ -1259,7 +1270,7 @@ namespace VW {
   
   void finish(vw& all, bool delete_all)
   {
-    if (!all.quiet)
+    if (!all.quiet  && !all.demangle_reg)
         {
         cerr.precision(6);
         cerr << endl << "finished run";

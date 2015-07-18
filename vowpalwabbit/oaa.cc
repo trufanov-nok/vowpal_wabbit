@@ -58,6 +58,10 @@ void predict_or_learn(oaa& o, LEARNER::base_learner& base, example& ec) {
   if (mc_label_data.label == 0 || (mc_label_data.label > o.k && mc_label_data.label != (uint32_t)-1))
     cout << "label " << mc_label_data.label << " is not in {1,"<< o.k << "} This won't work right." << endl;
 
+  if (!ec.test_only)
+      if (mc_label_data.label == (uint32_t)-1)
+          ec.test_only = true;
+
   stringstream outputStringStream;
   uint32_t prediction = 1;
 
@@ -67,7 +71,7 @@ void predict_or_learn(oaa& o, LEARNER::base_learner& base, example& ec) {
     if (o.pred[i-1].scalar > o.pred[prediction-1].scalar)
       prediction = i;
   
-  if (is_learn) {
+  if (is_learn && (mc_label_data.label != (uint32_t)-1)) {
     for (uint32_t i=1; i<=o.k; i++) {
       ec.l.simple = { (mc_label_data.label == i) ? 1.f : -1.f, mc_label_data.weight, 0.f };
       ec.pred.scalar = o.pred[i-1].scalar;
@@ -129,8 +133,8 @@ LEARNER::base_learner* oaa_setup(vw& all)
     l = &LEARNER::init_multiclass_learner(data_ptr, setup_base(all), predict_or_learn<true, true>, 
 					  predict_or_learn<false, true>, all.p, data.k);
   else
-    l = &LEARNER::init_multiclass_learner(data_ptr, setup_base(all),predict_or_learn<true, false>, 
-					  predict_or_learn<false, false>, all.p, data.k);
+    l = &LEARNER::init_multiclass_learner(data_ptr, setup_base(all),predict_or_learn<true, false>,
+                      predict_or_learn<false, false>, all.p, data.k);
   if (data.num_subsample > 0)
     l->set_learn(learn_randomized);
   l->set_finish(finish);

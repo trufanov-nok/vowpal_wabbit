@@ -599,10 +599,11 @@ void save_load_regressor(vw& all, io_buf& model_file, bool read, bool text)
 	  c++;
 	  brw = bin_read_fixed(model_file, (char*)&i, sizeof(i),"");
 	  if (brw > 0)
-	    {
+        {
 	      assert (i< length);		
 	      v = &(all.reg.weight_vector[stride*i]);
 	      brw += bin_read_fixed(model_file, (char*)v, sizeof(*v), "");
+          ++all.weights_loaded;
 	    }
 	}
       else// write binary or text
@@ -619,7 +620,7 @@ void save_load_regressor(vw& all, io_buf& model_file, bool read, bool text)
 	      brw = bin_text_write_fixed(model_file,(char *)&i, sizeof (i),
 					 buff, text_len, text);
 	      
-              text_len = sprintf(buff, ":%f\n", *v);
+              text_len = sprintf(buff, ":%g\n", *v);
 	      brw+= bin_text_write_fixed(model_file,(char *)v, sizeof (*v),
 					 buff, text_len, text);
 	    }
@@ -764,6 +765,7 @@ void save_load_online_state(vw& all, io_buf& model_file, bool read, bool text, g
 		brw += bin_read_fixed(model_file, (char*)v, sizeof(*v)*3, "");	
 	      if (!all.training)
 		v[1]=v[2]=0.;
+          ++all.weights_loaded;
 	    }
 	}
       else // write binary or text
