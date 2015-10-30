@@ -27,7 +27,7 @@ vw& setup(int argc, char* argv[])
 
   all.vw_is_main = true;
 
-  if (!all.quiet && !all.bfgs && !all.searchstr)
+  if (!all.quiet && !all.bfgs && !all.searchstr && ! all.demangle_reg)
   { std::cerr << std::left
               << std::setw(shared_data::col_avg_loss) << std::left << "average"
               << " "
@@ -60,7 +60,25 @@ vw& setup(int argc, char* argv[])
               << " "
               << std::setw(shared_data::col_current_features) << "features"
               << std::endl;
-  }
+  } else
+      if (!all.quiet && all.demangle_reg)
+      {
+          std::cerr << "Regressor contains " << all.weights_loaded << " weights\n";
+          std::cerr << std::left
+                    << std::setw(shared_data::col_example_counter) << "example"
+                    << " "
+                    << std::setw(shared_data::col_example_weight) << "features"
+                    << " "
+                    << std::setw(shared_data::col_current_label) << "total"
+                    << std::endl;
+          std::cerr << std::left
+                    << std::setw(shared_data::col_example_counter) << "counter"
+                    << " "
+                    << std::setw(shared_data::col_example_weight) << "demangled"
+                    << " "
+                    << std::setw(shared_data::col_current_label) << "progress"
+                    << std::endl;
+      }
 
   return all;
 }

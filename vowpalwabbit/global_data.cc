@@ -264,6 +264,8 @@ vw::vw()
   daemon = false;
   num_children = 10;
   save_resume = false;
+  demangle_reg = false;
+  weights_loaded = 0;
 
   random_positive_weights = false;
 

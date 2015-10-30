@@ -428,6 +428,8 @@ struct vw
   bool hessian_on;
 
   bool save_resume;
+  bool demangle_reg;
+  size_t weights_loaded;
   version_struct model_file_ver;
   double normalized_sum_norm_x;
   bool vw_is_main;  // true if vw is executable; false in library mode

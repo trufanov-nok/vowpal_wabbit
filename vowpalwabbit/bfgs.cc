@@ -816,6 +816,7 @@ void save_load_regularizer(vw& all, bfgs& b, io_buf& model_file, bool read, bool
         v = &(b.regularizers[i]);
         if (brw > 0)
           brw += bin_read_fixed(model_file, (char*)v, sizeof(*v), "");
+        ++all.weights_loaded;
       }
     }
     else // write binary or text

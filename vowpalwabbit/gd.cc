@@ -577,6 +577,7 @@ void save_load_regressor(vw& all, io_buf& model_file, bool read, bool text)
         }
         v = &(all.reg.weight_vector[stride*i]);
         brw += bin_read_fixed(model_file, (char*)v, sizeof(*v), "");
+        ++all.weights_loaded;
       }
     }
     else// write binary or text
@@ -736,6 +737,7 @@ void save_load_online_state(vw& all, io_buf& model_file, bool read, bool text, g
           brw += bin_read_fixed(model_file, (char*)v, sizeof(*v) * 3, "");
         if (!all.training)
           v[1] = v[2] = 0.;
+        ++all.weights_loaded;
       }
     }
     else // write binary or text
